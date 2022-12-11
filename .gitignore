@@ -1,0 +1,9 @@
+/.vscode
+/lektion1.ps1
+/listAllVms.ps1
+/login.ps1
+/removeVM.ps1
+/selectVM.ps1
+/skapa users mm.txt
+/template.ps1
+/win10Template.ps1
