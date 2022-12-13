@@ -30,8 +30,8 @@ function funcCreate-VM{
     $name = Read-Host "Write name"
     $menuOption = Read-Host "1 = Server. 2 = Client"
 
-switch($menuOption)
-{
+        switch($menuOption)
+            {
     1{Clear-Host
         New-VM -Name $name -Path "C:\VM\VM" -MemoryStartupBytes 2048mb -Generation 2
         Set-VMProcessor -VMName $name -Count 4
@@ -52,7 +52,7 @@ switch($menuOption)
         Clear-Host
         Write-Output "Incorrect. Write a number from the menu.!"
     Break }
-    }
+            }
 }
 
 Clear-Host
@@ -62,6 +62,7 @@ while($true)
 {
     $allVms = $null
     $allVms = Get-VM * | Select-Object Name, State, CPUUsage, MemoryAssigned
+    start-sleep 1
 Write-Output "Welcome to DVMMoHH!"
 
 Write-Output "1. List all VMs"
@@ -82,7 +83,7 @@ switch($menuOption)
         
         Continue}
     3{Clear-Host ## Manage a VM
-        Get-ListOfVMs
+       
         Write-Output "NYI"       
         Write-Output " "
         Continue}
