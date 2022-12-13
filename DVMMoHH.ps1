@@ -61,7 +61,7 @@ Clear-Host
 while($true)
 {
     $allVms = $null
-    $allVms = Get-VM * | Select-Object Name, State, CPUUsage, MemoryAssigned
+    $allVms = Get-VM | Select-Object Name, State, CPUUsage, MemoryAssigned | ft
     start-sleep 1
 Write-Output "Welcome to DVMMoHH!"
 
