@@ -38,6 +38,7 @@ function Get-DanManage
                     } while ($VMonline.Heartbeat -ne "OkApplicationsUnknown")
                     start-sleep 15
                 Write-Host "VM started"
+                Write-Host "Logging in..."
                 }
                 $usernameTemp = "tempAdmin"
                 $password = ConvertTo-SecureString "Sommar2020" -AsPlainText -Force
@@ -45,9 +46,10 @@ function Get-DanManage
                 Invoke-Command  -VmName $nameManage -Credential $credTemp -ScriptBlock {
                     $loggedinuser = whoami
                     write-host "Logged in as: $($loggedinuser)"
+                    write-host "Installing AD DS..."
                     install-windowsfeature AD-Domain-Services
                     Import-Module ADDSDeployment
-                    Write-Host "AD installed"
+                    Write-Host "AD DS installed."
                 } 
 
         $nameManage = "PlaceHolderNameToStopMistakes"
@@ -61,7 +63,7 @@ else {
 function Remove-DanVM{
     
     $allVmList = $null
-    $allVmList = Get-VM | Select-Object Name
+    $allVmList = Get-VM | Select-Object Name, State
     Clear-Host
     $allVms
     
@@ -72,10 +74,22 @@ function Remove-DanVM{
         if($value.Name -eq $nameRemove)
         {
             $correctName = $true
+            $vmState = $value.State
         }
     }
     if($correctName)
     {
+##add code to stop VM if it is running here
+if($vmState -eq "Running")
+                {
+                Write-Host "Turning off VM..."
+                
+                Stop-Vm -Name $nameRemove -TurnOff
+                Start-Sleep 5
+                Write-Host "VM turned off."
+                Write-Host "Starting to delete $($nameRemove)..."
+                }
+
 Remove-VM -Name $nameRemove
 Remove-Item -Path "C:\VM\VM\$($nameRemove)" -Force
 Write-Output " "
