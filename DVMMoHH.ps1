@@ -39,7 +39,7 @@ function Get-DanManage{
                 Write-Host "VM started"
                 Write-Host "Logging in..."
                 }
-                $usernameTemp = "tempAdmin"
+                $usernameTemp = "Administrator"
                 $password = ConvertTo-SecureString "Sommar2020" -AsPlainText -Force
                 $credTemp = new-object -typename System.Management.Automation.PSCredential -argumentlist $usernameTemp, $password
                 Invoke-Command  -VmName $nameManage -Credential $credTemp -ScriptBlock {
