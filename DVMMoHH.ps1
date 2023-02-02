@@ -115,28 +115,42 @@ function New-DanVM{
 
         switch($menuOption)
             {
-    1{Clear-Host
+    1{Clear-Host ##SERVER
         New-VM -Name $name -Path "C:\VM\VM" -MemoryStartupBytes 2048mb -Generation 2 -SwitchName 'LAN'
         Set-VMProcessor -VMName $name -Count 2
         Set-VM -Name $name -AutomaticCheckpointsEnabled $false
         New-VHD -Path "C:\VM\VM\$($name)\$($name).vhdx" -Differencing -ParentPath "C:\VM\Templates\Server19-template.vhdx"
-        Add-VMHardDiskDrive -VMName $($name) -Path "C:\VM\VM\$($name)\$($name).vhdx"       
+        Add-VMHardDiskDrive -VMName $($name) -Path "C:\VM\VM\$($name)\$($name).vhdx"
+        $firmware = Get-VMFirmware -VMName $name
+        $bootorder = $firmware.BootOrder
+        foreach ($bootdev in $bootorder) {
+            if ($bootdev.FirmwarePath.Contains("Scsi(0,0)")) {
+            Set-VMFirmware -FirstBootDevice $bootdev -VMName $name
+            }
+            }
         Write-Output " "
         Read-Host "VM has been created. Press any key to continue or CTRL+C to quit" 
         Continue }
-    2{Clear-Host 
-        New-VM -Name $name -Path "C:\VM\VM" -MemoryStartupBytes 2048mb -Generation 2 -SwitchName 'LAN'
+    2{Clear-Host ##CLIENT
+        New-VM -Name $name -Path "C:\VM\VM" -MemoryStartupBytes 1024mb -Generation 2 -SwitchName 'LAN'
         Set-VMProcessor -VMName $name -Count 2
         Set-VM -Name $name -AutomaticCheckpointsEnabled $false
         New-VHD -Path "C:\VM\VM\$($name)\$($name).vhdx" -Differencing -ParentPath "C:\VM\Templates\Windows10-template.vhdx"
-        Add-VMHardDiskDrive -VMName $($name) -Path "C:\VM\VM\$($name)\$($name).vhdx"     
+        Add-VMHardDiskDrive -VMName $($name) -Path "C:\VM\VM\$($name)\$($name).vhdx"
+        $firmware = Get-VMFirmware -VMName $name
+        $bootorder = $firmware.BootOrder
+        foreach ($bootdev in $bootorder) {
+            if ($bootdev.FirmwarePath.Contains("Scsi(0,0)")) {
+            Set-VMFirmware -FirstBootDevice $bootdev -VMName $name
+            }
+            }    
         Write-Output " "
         Read-Host "VM has been created. Press any key to continue or CTRL+C to quit" 
         Continue}
     default{
         Clear-Host
         Write-Output "Incorrect. Write a number from the menu.!"
-    Break }
+        Continue }
             }
 }
 function Export-DanVM{
